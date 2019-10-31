@@ -1,23 +1,35 @@
 window.onload=function(){
        
-    $("#buttonNome").on("click",saluto);
+    $("#buttonNome").on("click",saluto);//es1
     
-    triangolo();
+    triangolo();//es2
 
-    $("#buttonAnno").on("click",anno);
+    $("#buttonAnno").on("click",anno);//es3
 
-    $("#moltiplica").on("click",moltiplica);
-    $("#dividi").on("click",dividi);
+    $("#moltiplica").on("click",moltiplica);//es4
+    $("#dividi").on("click",dividi);        //es4
 
-    $("#buttonEst").on("click",estensione);
+    $("#buttonEst").on("click",estensione);//es5
 
-    $("#buttonStringa").on("click",creaJa);
+    $("#buttonStringa").on("click",creaJa);//es6
 
-    $("#max").on("click",max);
+    $("#max").on("click",max);//es7
 
-    $("#buttonInv").on("click",inverti);
+    $("#buttonInv").on("click",inverti);//es8
 
-    $("#buttonFrase").on("click",frase);
+    $("#buttonFrase").on("click",frase);//es9
+    
+    $("#buttonCasuale").on("click",casuale);//es10
+    
+    $("#maxnum").on("click",maxnum);//es11
+    
+    $("#stmnum").on("click",stampanum);//es13
+    
+    $("#trasf").on("click",trasforma);//es14
+    
+    $("#pesc").on("click",pesca);//es15
+    
+    $("#cerca").on("click",cerca);//es16
 
 
     
@@ -30,9 +42,10 @@ function saluto(){
 }
 
 function triangolo(){
-    var perimetro=5+6+7;
+    var perimetro=3+3+3;
     var semip=perimetro/2;
-    var area= Math.sqrt(semip*(semip-5)*(semip-6)*(semip-7));
+    console.log("Sempiper : "+semip);
+    var area= Math.sqrt(semip*(semip-3)*(semip-3)*(semip-3));
 
     $("#perimetro").text("Il perimetro e : "+perimetro);
     $("#area").text("L'area e : "+area);
@@ -65,22 +78,22 @@ function creaJa(){
     if(s.substring(0,2)=="Ja")
         $("#stringaJa").text(s);
     else
-    $("#stringaJa").text("Ja"+s);
-
+        $("#stringaJa").text("Ja"+s);
 }
 
 function max(){   
     var n1=$("#n1").val();
     var n2=$("#n2").val();
-    console.log(n1+" "+n2);
-
     if(n1==n2)
         alert("I 2 numeri sono uguali");
-    else {
+    else {        
         if(Math.abs(100-n1) < Math.abs(100-n2))
             $("#maxRis").text("Il primo numero è più vicno a 100");
         else
-            $("#maxRis").text("Il secondo numero è più vicno a 100");
+            if(Math.abs(100-n1) > Math.abs(100-n2))
+                $("#maxRis").text("Il secondo numero è più vicno a 100");
+        else
+            $("#maxRis").text("I due numeri sono alla stessa distanza");
     }
 }
 
@@ -95,7 +108,6 @@ function inverti(){
 }
 
 function frase(){  
-    console.log("Entro"); 
     var s=$("#frase").val();
     var sm="";
 
@@ -103,8 +115,74 @@ function frase(){
         if(i==0 || (i>0 && s.charAt(i-1)==" "))
             sm+=(s.charAt(i).toUpperCase());
         else
-        sm+=(s.charAt(i));
+            sm+=(s.charAt(i));
     }
     $("#fraseM").text("la stringa maiuscola è : "+sm);
 
+}
+
+function casuale(){  
+    console.log("Entro");
+    var n=$("#frasecasuale").val();
+    var alfabeto="QWERTYUIOPLKJHGFDSAZXCVBNMzxcvbnmlkjhgfdsaqwertyuiop1234567890"
+    console.log(alfabeto.length);
+    var s=$("#frasecasuale").val();
+    var s="";
+
+    for(var i=0;i<n;i++){
+        s+=alfabeto.charAt((Math.floor(Math.random() * alfabeto.length)));
+    }
+    $("#fraseC").text("la stringa casuale è : "+s);
+}
+
+function maxnum(){   
+    var num1=$("#num1").val();
+    var num2=$("#num2").val();
+
+    if(num1>num2)
+        alert("Il maggiore è : "+num1);
+    else 
+        alert("Il maggiore è : "+num2);
+}
+
+function stampanum(){  
+    for(var i=1;i<=100;i++){
+        if(i%3==0 && i%5!=0)
+            console.log("Ciao");
+        else if(i%3!=0 && i%5==0)
+            console.log("Mondo");
+        else if(i%3==0 && i%5==0)
+            console.log("Ciao mondo");
+        else
+            console.log(i)
+    }
+}
+
+function trasforma(){  
+    var a=["Ciao","come","va la vita"];
+    var str="";
+    for(var i=0;i<a.length;i++)
+        str+=a[i];
+    console.log(str);
+}
+
+function pesca(){  
+    var a=[1,2,3,4,5,6,7,8,9,7,5,4,3,6,5,4,5,7,4,6,56,6];
+    console.log(a[(Math.floor(Math.random() * a.length))]);
+}
+
+function cerca(){  
+    var str="Java Lorem ipsum sit dolor Java aliqua clara et pulcra sunt Java";
+    var target="Jaasgqvva";
+    var trovata=false;
+    var x=str.split(" ");
+    for(var i=0;i<x.length && !trovata;i++){
+        if(x[i]==target)
+            trovata=true;
+    }
+    
+    if(trovata)
+        console.log("Stringa trovata")
+    else
+        console.log("Stringa non trovata");
 }
