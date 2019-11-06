@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Primo Form</title>
+</head>
+<body>
+    
+    Nome: <input type="text" id="mioTxt" value="">
+    <p>Fai click sul pulsante per ottenere il valore del campo Nome</p>
+    <input type="button" value="Clicca" onclick="miaFunz()">
+    <p id="demo"></p>
+
+    <script type="text/javascript">
+    
+    function miaFunz(){
+        //recupero il valore del mio campo di input
+        var nome = document.getElementById('mioTxt').value;
+        console.log(nome);
+        var elDemo = document.getElementById('demo');
+        console.log(elDemo);
+        elDemo.innerHTML = 'Ciao ' + nome; 
+        //versione compatta
+        document.getElementById('demo').innerHTML = 'Ciao' + nome;
+    }
+
+    </script>
+
+</body>
+</html>
