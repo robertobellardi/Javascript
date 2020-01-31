@@ -1,30 +1,40 @@
 var check=false;
-
 window.onload = function () {
-    $("#send").click(send);
-    $("#checkbox").click(changeCheck) 
+    $("#counter").text(140);
+    $("#twitterarea").on('change keyup paste',eventOnTextarea);
+    $("#addList").on('click',createList);
+    $("#addElementInList").on('click',addElementToList);
 }
 
-function send() {
-    if(checkMail() && check)
-        alert("Campi validi. Hai scelto l'abbonamento : "+$("#select").children("option:selected").val());
-    else
-        alert("Campi errati");
+function eventOnTextarea(){
+    var currentVal = $(this).val();
+
+    if(140 - currentVal.length >= 0){
+        $("#counter").text(140 - currentVal.length);
+        console.log(140 - currentVal.length);
+    }
+    else{
+        $("#twitterarea").val(currentVal.substr(0,140));
+    }        
 }
 
-function checkMail(){
-    var mail=$("#mail").val();
+function createList(){
+    var name =  $("#inputNameList").val();
     
-    if(mail != "")
-        return true;
-    else
-        return false;
+    $("#list").append($("<ul id='newList' class='titleList'>"+name+"</ul>"));
+    $("#addList").off("click");
 }
 
-function changeCheck(){
+function addElementToList(){
+    var ele =  $("#inputElementList").val();
     
-    if(check==false)
-        check=true;
-    else
-        check=false;
+    $("#newList").append($("<li class='elementList'>"+ele+"<img class='deleteIcon' src='baseline_clear_black_18dp.png' alt='icon_delete.png'></li>"));
+    $("#inputElementList").val("");
+    $("#newList li:last-child img").on("click",deleteIcon);
+}
+
+function deleteIcon(){
+    $(this).parent().addClass("deleteElementList");
+    $(this).off("click");
+    console.log("click");
 }

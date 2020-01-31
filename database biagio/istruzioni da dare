@@ -1,0 +1,352 @@
+//login in MariaDB
+mysql -u root -p
+
+create database gestionale;
+
+grant all on gestionale.* to 'ingusci'@'localhost' identified by 'ingusci';
+
+exit
+
+mysql -uingusci -pingusci gestionale
+
+//creazione tabelle+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+create table cliente(
+    id Int auto_increment,
+    cognome varchar(50),
+    nome varchar(50),
+    telefono int not null,
+    email varchar(50) not null,
+    indirizzo varchar(100),
+    citta varchar(30),
+    regione varchar(30),
+    credito smallint,
+    primary key(id));
+
+
+    create table ordine(
+        id int auto_increment primary key,
+        id_cliente int,
+        id_impiegato int,
+        data date,
+        stato enum ('Consegnato','Spedito','Da consegnare'));
+
+    create table articolo(
+        id int auto_increment primary key,
+        descrizione varchar(255),
+        prezzo decimal(10,2),
+        categoria enum('Hardware','Software'),
+        stocks int);
+    
+    create table impiegato(
+        id int auto_increment primary key,
+        nome varchar(30),
+        cognome varchar(30),
+        ruolo varchar(30),
+        riferimento int,
+        stipendio decimal(10,2),
+         id_ufficio int);
+
+    create table ufficio(
+        id int auto_increment primary key,
+        nome varchar(30),
+        id_luogo int);
+    
+
+    create table ordine_dettaglio(
+        id_ordine int,
+        id_articolo int,
+        quantita tinyint);
+
+///robe++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   alter table articolo modify stocks tinyint;
+
+   alter table cliente modify nome varchar(50);
+   alter table cliente modify cognome varchar(50);
+   alter table cliente modify indirizzo varchar(100);
+
+   desc articolo; desc cliente; desc ordine; desc impiegato; desc ufficio; desc ordine_dettaglio;
+
+///inseirmento dati all'interno delle tabelle ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+INSERT INTO `articolo` VALUES (1,'monitor',350.00,'hardware',87),
+(2,'chiavetta',38.50,'hardware',84),
+(3,'hard-disk',300.00,'hardware',94),
+(4,'smartwatch',400.00,'hardware',96),
+(5,'Photoshop',700.00,'software',98),
+(6,'Office',350.50,'software',95),
+(7,'Webcam',68.00,'hardware',94),
+(8,'Adobe CC',1200.00,'software',100),
+(9,'Office',120.00,'software',100);
+
+INSERT INTO `cliente` VALUES (1,'rossi','paolo','0116702323','paolo25@gmail.com','Via Roma 25','torino','Piemonte',107),
+(2,'mori','marco','0116704040','marco18@gmail.com','Via Torino 18','milano','Lombardia',NULL),
+(3,'bianchi','luca','0116701010','luca2@gmail.com','Via Milano 2','bologna','Emilia-Romagna',2119),
+(4,'verdi','mario','0116702020','mario128@gmail.com','Corso Francia 128','torino','Piemonte',NULL),
+(5,'rosso','alberto','0116707070','alberto12@icloud.com','Corso Svizzera 12','milano','Lombardia',789),
+(6,'esposito','franco','0119978812','francoe@icloud.com','Via Roma 3','Asti','Piemonte',1875),
+(7,'bruni','carlo','0117778816','brunicarlo@icloud.com','Corso Stati Uniti 13','Torino','Piemonte',NULL);
+
+INSERT INTO `impiegato` VALUES (1,'Mario','Rossi','tecnico',NULL,2500.00,1),
+(2,'Marco','Bianchi','amministrativo',7,1600.00,2),
+(3,'Paolo','Verdi','amministrativo',7,1600.00,2),
+(4,'Enrico','Marrone','venditore',8,1300.00,3),
+(5,'Nicola','Testa','venditore',8,1300.00,3),
+(6,'Franco','Barba','tecnico',1,1500.00,1),
+(7,'Elena','Totti','amministrativo',NULL,2600.00,2),
+(8,'Paola','Capra','venditore',NULL,2300.00,3),
+(9,'Mauro','Barba','venditore',8,1300.00,3);
+
+INSERT INTO `ordine` VALUES (1,1,4,'2017-12-01','consegnato'),
+(2,3,4,'2018-01-11','consegnato'),
+(3,5,8,'2018-01-21','da spedire'),
+(4,3,4,'2018-01-23','spedito'),
+(5,6,4,'2018-02-03','consegnato'),
+(7,6,8,'2018-02-13','da spedire'),
+(12,3,4,'2018-02-28','spedito');
+
+INSERT INTO `ordine_dettaglio` VALUES (1,2,1),
+(1,7,3),
+(2,5,1),
+(2,6,5),
+(3,2,10),
+(3,4,1),
+(4,1,3),
+(4,3,2),
+(4,7,1),
+(5,3,2),
+(5,7,1),
+(5,4,3),
+(5,5,1),
+(7,2,5),
+(7,3,2),
+(7,7,1),
+(12,1,10);
+
+
+INSERT INTO `ufficio` VALUES (1,'IT',20),
+(2,'Amministrazione',12),
+(3,'Commerciale',12),
+(4,'Logistica',20);
+
+/// inizio chiavi esterne ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+alter table ordine add constraint fk_ordine_cliente
+    foreign key(id_cliente) references cliente(id)
+    on Delete no action
+    on update no action;
+
+alter table ordine add constraint fk_ordine_impiegato
+    foreign key(id_impiegato) references impiegato(id)
+    on Delete set null
+    on update set null;
+
+alter table impiegato add constraint fk_impiegato_ufficio
+    foreign key(id_ufficio) references ufficio(id)
+    on Delete no action
+    on update no action;
+
+alter table ordine_dettaglio add constraint fk_od_ordine
+    foreign key(id_ordine) references ordine(id)
+    on delete no action
+    on update no action;
+
+alter table ordine_dettaglio add constraint fk_od_articolo
+    foreign key(id_articolo) references articolo(id)
+    on delete no action
+    on update no action;
+
+//esercitazione 1) valore magazzino
+
+select sum(prezzo*stocks) from articolo;
+
+MariaDB [gestionale]> select sum(prezzo*stocks) from articolo;
++--------------------+
+| sum(prezzo*stocks) |
++--------------------+
+|          340573.50 |
++--------------------+
+1 row in set (0.000 sec)
+
+
+//esercitazione 2) valore magazzino per categoria;
+
+select sum(prezzo*stocks) from articolo group by categoria;
+
+MariaDB [gestionale]> select sum(prezzo*stocks) from articolo group by categoria;
++--------------------+
+| sum(prezzo*stocks) |
++--------------------+
+|          106676.00 |
+|          233897.50 |
++--------------------+
+2 rows in set (0.000 sec)
+
+//esercizio 3) Articoli ordinati e quantita
+
+select descrizione, sum(quantita) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo group by descrizione order by ordinati desc;
+
+MariaDB [gestionale]>select descrizione, sum(quantita) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo group by descrizione order by ordinati desc;
++-------------+----------+
+| descrizione | ordinati |
++-------------+----------+
+| chiavetta   |       16 |
+| monitor     |       13 |
+| hard-disk   |        6 |
+| Webcam      |        6 |
+| Office      |        5 |
+| smartwatch  |        4 |
+| Photoshop   |        2 |
++-------------+----------+
+7 rows in set (0.001 sec)
+
+//esercizio 4) Quantita per categoria degli ordinati
+
+select categoria, sum(quantita) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo group by categoria order by ordinati desc;
+
+MariaDB [gestionale]> select categoria, sum(quantita) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo group by categoria order by ordinati desc;
++-----------+----------+
+| categoria | ordinati |
++-----------+----------+
+| Hardware  |       45 |
+| Software  |        7 |
++-----------+----------+
+2 rows in set (0.001 sec)
+
+
+//esercizio 5) articoli ordinati in un particolare ordine il numero 7
+
+select descrizione, sum(quantita) quantita from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo and ordine_dettaglio.id_ordine=7 group by descrizione order by quantita desc;
+
+MariaDB [gestionale]> select descrizione, sum(quantita) quantita from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo and ordine_dettaglio.id_ordine=7 group by descrizione order by quantita desc;
++-------------+----------+
+| descrizione | quantita |
++-------------+----------+
+| chiavetta   |        5 |
+| hard-disk   |        2 |
+| Webcam      |        1 |
++-------------+----------+
+3 rows in set (0.000 sec)
+
+//esercizio 6) articolo più ordinato //limite 1 e ordine crescente fa vedere il maggiore per via del limite della visione del primo campo
+
+select descrizione, sum(quantita) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo group by descrizione order by ordinati desc limit 1;
+
+MariaDB [gestionale]> select descrizione, sum(quantita*prezzo) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo group by descrizione order by ordinati desc limit 1;
++-------------+----------+
+| descrizione | ordinati |
++-------------+----------+
+| chiavetta   |       16 |
++-------------+----------+
+1 row in set (0.001 sec)
+
+//esercizio 7) valore degli ordini:Totale in euro ordinato dai clienti
+
+select sum(quantita*prezzo) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo;
+
+MariaDB [gestionale]> select sum(quantita*prezzo) ordinati from articolo, ordine_dettaglio where articolo.id=ordine_dettaglio.id_articolo;
++----------+
+| ordinati |
++----------+
+| 12126.50 |
++----------+
+1 row in set (0.000 sec)
+
+//esercizio 8)Seleziono i nomi e email dei clienti che hanno effettuato ordini
+
+select nome, email from cliente, ordine where ordine.id_cliente=cliente.id;
+
+MariaDB [gestionale]>select nome, email from cliente, ordine where ordine.id_cliente=cliente.id;
++---------+----------------------+
+| nome    | email                |
++---------+----------------------+
+| paolo   | paolo25@gmail.com    |
+| luca    | luca2@gmail.com      |
+| luca    | luca2@gmail.com      |
+| luca    | luca2@gmail.com      |
+| alberto | alberto12@icloud.com |
+| franco  | francoe@icloud.com   |
+| franco  | francoe@icloud.com   |
++---------+----------------------+
+7 rows in set (0.001 sec)
+
+//esercizio 9) Seleziono gli ordini eseguiti dai clienti e i nomi corrispondenti
+
+select cognome, ordine.id, data from cliente, ordine where cliente.id=ordine.id_cliente order by cognome;
+
+MariaDB [gestionale]> select cognome, ordine.id, data from cliente, ordine where cliente.id=ordine.id_cliente order by cognome;
++----------+----+------------+
+| cognome  | id | data       |
++----------+----+------------+
+| bianchi  |  2 | 2018-01-11 |
+| bianchi  | 12 | 2018-02-28 |
+| bianchi  |  4 | 2018-01-23 |
+| esposito |  7 | 2018-02-13 |
+| esposito |  5 | 2018-02-03 |
+| rossi    |  1 | 2017-12-01 |
+| rosso    |  3 | 2018-01-21 |
++----------+----+------------+
+7 rows in set (0.000 sec)
+
+//esercizio 10) Seleziono gli ordini eseguiti da un particolare cliente ('Esposito') con il dettaglio degli articoli richiesti
+
+select cognome, ordine.id, data, descrizione, quantita, (prezzo*quantita) 'totale articolo'
+    from ordine
+    join cliente on cliente.id=ordine.id_cliente
+    join ordine_dettaglio on ordine.id=ordine_dettaglio.id_ordine
+    join articolo on articolo.id=ordine_dettaglio.id_articolo
+    where cliente.cognome='Esposito';
+
++----------+----+------------+-------------+----------+-----------------+
+| cognome  | id | data       | descrizione | quantita | totale articolo |
++----------+----+------------+-------------+----------+-----------------+
+| esposito |  5 | 2018-02-03 | hard-disk   |        2 |          600.00 |
+| esposito |  5 | 2018-02-03 | Webcam      |        1 |           68.00 |
+| esposito |  5 | 2018-02-03 | smartwatch  |        3 |         1200.00 |
+| esposito |  5 | 2018-02-03 | Photoshop   |        1 |          700.00 |
+| esposito |  7 | 2018-02-13 | chiavetta   |        5 |          192.50 |
+| esposito |  7 | 2018-02-13 | hard-disk   |        2 |          600.00 |
+| esposito |  7 | 2018-02-13 | Webcam      |        1 |           68.00 |
++----------+----+------------+-------------+----------+-----------------+
+7 rows in set (0.001 sec)
+
+//esercizio 10+)Seleziono un particolare ordine (ordine_id=7) eseguiti da un particolare cliente ('Esposito') con il dettaglio degli articoli richiesti 
+
+select cognome, ordine.id, data, descrizione, quantita, (prezzo*quantita) 'totale articolo'
+    from ordine
+    join cliente on cliente.id=ordine.id_cliente
+    join ordine_dettaglio on ordine.id=ordine_dettaglio.id_ordine
+    join articolo on articolo.id=ordine_dettaglio.id_articolo
+    where cliente.cognome='Esposito' and ordine.id=7
+    group by descrizione;
+
++----------+----+------------+-------------+----------+-----------------+
+| cognome  | id | data       | descrizione | quantita | totale articolo |
++----------+----+------------+-------------+----------+-----------------+
+| esposito |  7 | 2018-02-13 | chiavetta   |        5 |          192.50 |
+| esposito |  7 | 2018-02-13 | hard-disk   |        2 |          600.00 |
+| esposito |  7 | 2018-02-13 | Webcam      |        1 |           68.00 |
++----------+----+------------+-------------+----------+-----------------+
+3 rows in set (0.000 sec)
+
+//esercizio 11)  Voglio sapere quanto hanno speso in totale singoli clienti, i
+record andranno ordinati dal più spendaccione al più tirchio
+
+select cognome, sum(quantita*prezzo) totale_speso
+from ordine
+    join cliente on cliente.id=ordine.id_cliente
+    join ordine_dettaglio on ordine.id=ordine_dettaglio.id_ordine
+    join articolo on articolo.id=ordine_dettaglio.id_articolo
+    group by cognome
+    order by totale_speso desc;
+
++----------+--------------+
+| cognome  | totale_speso |
++----------+--------------+
+| bianchi  |      7670.50 |
+| esposito |      3428.50 |
+| rosso    |       785.00 |
+| rossi    |       242.50 |
++----------+--------------+
+4 rows in set (0.001 sec)
